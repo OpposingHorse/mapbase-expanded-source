@@ -726,6 +726,10 @@ public:
 	void InputDispatchResponse( inputdata_t& inputdata );
 	void InputDisableShadow( inputdata_t &inputdata );
 	void InputEnableShadow( inputdata_t &inputdata );
+	void InputDisableDraw( inputdata_t &inputdata );
+	void InputEnableDraw( inputdata_t &inputdata );
+	void InputIncrementBrushTexIndex( inputdata_t &inputdata );
+	void InputSetBrushTexIndex( inputdata_t &inputdata );
 	void InputAddOutput( inputdata_t &inputdata );
 #ifdef MAPBASE
 	void InputChangeVariable( inputdata_t &inputdata );

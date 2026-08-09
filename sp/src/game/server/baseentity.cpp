@@ -2024,7 +2024,7 @@ BEGIN_DATADESC_NO_BASE( CBaseEntity )
 	DEFINE_GLOBAL_KEYFIELD( m_ModelName, FIELD_MODELNAME, "model" ),
 	
 	DEFINE_KEYFIELD( m_vecBaseVelocity, FIELD_VECTOR, "basevelocity" ),
-	DEFINE_FIELD( m_vecAbsVelocity, FIELD_VECTOR ),
+	DEFINE_KEYFIELD( m_vecAbsVelocity, FIELD_VECTOR, "absvelocity" ),
 	DEFINE_KEYFIELD( m_vecAngVelocity, FIELD_VECTOR, "avelocity" ),
 //	DEFINE_FIELD( m_vecAbsAngVelocity, FIELD_VECTOR ),
 	DEFINE_ARRAY( m_rgflCoordinateFrame, FIELD_FLOAT, 12 ), // NOTE: MUST BE IN LOCAL SPACE, NOT POSITION_VECTOR!!! (see CBaseEntity::Restore)
@@ -2114,6 +2114,10 @@ BEGIN_DATADESC_NO_BASE( CBaseEntity )
 	DEFINE_INPUTFUNC( FIELD_STRING, "AddOutput", InputAddOutput ),
 #ifdef MAPBASE
 	DEFINE_INPUTFUNC( FIELD_STRING, "ChangeVariable", InputChangeVariable ),
+	DEFINE_INPUTFUNC( FIELD_VOID, "DisableDraw", InputDisableDraw ),
+	DEFINE_INPUTFUNC( FIELD_VOID, "EnableDraw", InputEnableDraw ),
+	DEFINE_INPUTFUNC( FIELD_VOID, "IncrementTextureFrameIndex", InputIncrementBrushTexIndex ),
+	DEFINE_INPUTFUNC( FIELD_INTEGER, "SetTextureFrameIndex", InputSetBrushTexIndex ),
 #endif
 
 #ifdef MAPBASE
@@ -8609,6 +8613,28 @@ float g_debugCounter = 0;
 #endif // VMPROFILE
 
 //-----------------------------------------------------------------------------
+// Purpose: Increment toggleTextureVar of materials on the entity with 
+// 			ToggleTexture material proxy.
+// Input  : &inputdata - 
+//-----------------------------------------------------------------------------
+void CTextureToggle::InputIncrementBrushTexIndex( inputdata_t& inputdata )
+{
+	int iCurrentIndex = GetTextureFrameIndex() + 1;
+	SetTextureFrameIndex( iCurrentIndex );
+}
+
+//-----------------------------------------------------------------------------
+// Purpose: Explicitly set toggleTextureVar of materials on the entity with 
+// 			ToggleTexture material proxy.
+// Input  : &inputdata - 
+//-----------------------------------------------------------------------------
+void CTextureToggle::InputSetBrushTexIndex( inputdata_t& inputdata )
+{
+	int iData = inputdata.value.Int();
+	SetTextureFrameIndex( iData );
+}
+
+//-----------------------------------------------------------------------------
 // Returns true if the function was located and called. false otherwise.
 // NOTE:	Assumes the function takes no parameters at the moment.
 //-----------------------------------------------------------------------------
@@ -9007,6 +9033,20 @@ void CBaseEntity::InputDisableShadow( inputdata_t &inputdata )
 void CBaseEntity::InputEnableShadow( inputdata_t &inputdata )
 {
 	RemoveEffects( EF_NOSHADOW );
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+void CBaseEntity::InputDisableDraw( inputdata_t &inputdata )
+{
+	AddEffects( EF_NODRAW );
+}
+
+//-----------------------------------------------------------------------------
+//-----------------------------------------------------------------------------
+void CBaseEntity::InputEnableDraw( inputdata_t &inputdata )
+{
+	RemoveEffects( EF_NODRAW );
 }
 
 //-----------------------------------------------------------------------------
